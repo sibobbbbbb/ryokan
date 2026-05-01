@@ -313,6 +313,8 @@ export default function AnalyzePage() {
                 data={riskTiers}
                 entryPrice={positionData.entryPrice}
                 direction={positionData.direction}
+                leverage={positionData.leverage}
+                accountSize={positionData.accountSize}
               />
             ) : (
               <div
