@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" fill="none">
+  <rect x="65" y="110" width="70" height="80" rx="4" fill="#16161f" stroke="#f0a429" stroke-width="1.5"/>
+  <path d="M85 110 L100 130 L115 110" stroke="#f0a429" stroke-width="1.5" fill="none"/>
+  <!-- Head -->
+  <rect x="72" y="52" width="56" height="60" rx="6" fill="#1c1c28" stroke="#f0a429" stroke-width="2"/>
+  <!-- Eyebrows raised inner -->
+  <line x1="83" y1="70" x2="93" y2="74" stroke="#f0a429" stroke-width="2"/>
+  <line x1="107" y1="74" x2="117" y2="70" stroke="#f0a429" stroke-width="2"/>
+  <!-- Eyes - wide -->
+  <rect x="83" y="76" width="12" height="8" rx="1" fill="#f0a429"/>
+  <rect x="105" y="76" width="12" height="8" rx="1" fill="#f0a429"/>
+  <!-- Glasses pushed up -->
+  <rect x="80" y="72" width="18" height="14" rx="2" fill="none" stroke="#f0a429" stroke-width="1.5"/>
+  <rect x="102" y="72" width="18" height="14" rx="2" fill="none" stroke="#f0a429" stroke-width="1.5"/>
+  <line x1="98" y1="79" x2="102" y2="79" stroke="#f0a429" stroke-width="1.5"/>
+  <!-- Frown -->
+  <path d="M88 100 Q100 96 112 100" stroke="#f0a429" stroke-width="1.5" fill="none"/>
+  <!-- Warning triangle -->
+  <path d="M155 60 L170 88 L140 88 Z" fill="none" stroke="#f0a429" stroke-width="1.5"/>
+  <line x1="155" y1="68" x2="155" y2="79" stroke="#f0a429" stroke-width="2"/>
+  <circle cx="155" cy="83" r="1.5" fill="#f0a429"/>
+</svg>

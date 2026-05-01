@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" fill="none">
+  <!-- Body -->
+  <rect x="65" y="110" width="70" height="80" rx="4" fill="#16161f" stroke="#7c6af7" stroke-width="1.5"/>
+  <!-- Collar -->
+  <path d="M85 110 L100 130 L115 110" stroke="#7c6af7" stroke-width="1.5" fill="none"/>
+  <!-- Head -->
+  <rect x="72" y="55" width="56" height="58" rx="6" fill="#1c1c28" stroke="#9898b0" stroke-width="1.5"/>
+  <!-- Eyes - neutral -->
+  <rect x="84" y="76" width="10" height="6" rx="1" fill="#7c6af7"/>
+  <rect x="106" y="76" width="10" height="6" rx="1" fill="#7c6af7"/>
+  <!-- Glasses frame -->
+  <rect x="81" y="73" width="16" height="12" rx="2" fill="none" stroke="#5a5a70" stroke-width="1"/>
+  <rect x="103" y="73" width="16" height="12" rx="2" fill="none" stroke="#5a5a70" stroke-width="1"/>
+  <line x1="97" y1="79" x2="103" y2="79" stroke="#5a5a70" stroke-width="1"/>
+  <!-- Mouth - neutral line -->
+  <line x1="90" y1="98" x2="110" y2="98" stroke="#5a5a70" stroke-width="1.5"/>
+  <!-- Clipboard -->
+  <rect x="115" y="120" width="32" height="42" rx="2" fill="#1c1c28" stroke="#5a5a70" stroke-width="1"/>
+  <line x1="120" y1="132" x2="142" y2="132" stroke="#5a5a70" stroke-width="1"/>
+  <line x1="120" y1="139" x2="142" y2="139" stroke="#5a5a70" stroke-width="1"/>
+  <line x1="120" y1="146" x2="136" y2="146" stroke="#5a5a70" stroke-width="1"/>
+  <!-- Arm holding clipboard -->
+  <path d="M135 130 L120 125" stroke="#9898b0" stroke-width="2" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" fill="none">
+  <rect x="65" y="110" width="70" height="80" rx="4" fill="#16161f" stroke="#7c6af7" stroke-width="1.5"/>
+  <path d="M85 110 L100 130 L115 110" stroke="#7c6af7" stroke-width="1.5" fill="none"/>
+  <!-- Head -->
+  <rect x="72" y="50" width="56" height="62" rx="6" fill="#1c1c28" stroke="#7c6af7" stroke-width="1.5"/>
+  <!-- Eyes looking down/writing -->
+  <rect x="84" y="80" width="10" height="4" rx="1" fill="#7c6af7"/>
+  <rect x="106" y="80" width="10" height="4" rx="1" fill="#7c6af7"/>
+  <!-- Glasses -->
+  <rect x="81" y="76" width="16" height="11" rx="2" fill="none" stroke="#7c6af7" stroke-width="1"/>
+  <rect x="103" y="76" width="16" height="11" rx="2" fill="none" stroke="#7c6af7" stroke-width="1"/>
+  <line x1="97" y1="81" x2="103" y2="81" stroke="#7c6af7" stroke-width="1"/>
+  <!-- Focused mouth -->
+  <line x1="91" y1="99" x2="109" y2="99" stroke="#5a5a70" stroke-width="1.5"/>
+  <!-- Writing hand + pen -->
+  <path d="M118 140 L148 118" stroke="#9898b0" stroke-width="2" stroke-linecap="round"/>
+  <path d="M148 118 L155 112 L152 120 Z" fill="#9898b0"/>
+  <!-- Writing lines on paper -->
+  <rect x="30" y="140" width="55" height="45" rx="2" fill="#1c1c28" stroke="#5a5a70" stroke-width="1"/>
+  <line x1="35" y1="152" x2="78" y2="152" stroke="#7c6af7" stroke-width="1"/>
+  <line x1="35" y1="160" x2="78" y2="160" stroke="#7c6af7" stroke-width="1"/>
+  <line x1="35" y1="168" x2="60" y2="168" stroke="#7c6af7" stroke-width="1" opacity="0.6"/>
+  <!-- Cursor blink hint -->
+  <rect x="60" y="165" width="2" height="8" fill="#7c6af7" opacity="0.9"/>
+</svg>
