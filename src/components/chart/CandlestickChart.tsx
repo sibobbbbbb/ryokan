@@ -69,7 +69,6 @@ export function CandlestickChart({
 
       chartRef.current = chart;
 
-      // Candlestick series
       const candleSeries = chart.addCandlestickSeries({
         upColor: '#22c55e',
         downColor: '#ef4444',
@@ -139,12 +138,33 @@ export function CandlestickChart({
         });
       }
 
-      // S/R zone lines (nearest 6 within 5%)
+      // S/R zone bands — nearest 6 within 5%
+      // Each zone: solid center line (labeled) + dotted upper/lower bounds at ±0.3%
       const nearbyZones = srZones.filter((z) => z.distanceFromEntry <= 5).slice(0, 6);
       for (const zone of nearbyZones) {
+        const isSupport = zone.type === 'support';
+        const centerColor = isSupport ? 'rgba(34,197,94,0.7)' : 'rgba(239,68,68,0.7)';
+        const bandColor = isSupport ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)';
+
         candleSeries.createPriceLine({
           price: zone.priceLevel,
-          color: zone.type === 'support' ? 'rgba(34,197,94,0.5)' : 'rgba(239,68,68,0.5)',
+          color: centerColor,
+          lineWidth: 2,
+          lineStyle: 0,
+          axisLabelVisible: true,
+          title: isSupport ? 'S' : 'R',
+        });
+        candleSeries.createPriceLine({
+          price: zone.priceLevel * 1.003,
+          color: bandColor,
+          lineWidth: 1,
+          lineStyle: 1,
+          axisLabelVisible: false,
+          title: '',
+        });
+        candleSeries.createPriceLine({
+          price: zone.priceLevel * 0.997,
+          color: bandColor,
           lineWidth: 1,
           lineStyle: 1,
           axisLabelVisible: false,
@@ -223,6 +243,8 @@ export function CandlestickChart({
           { label: 'EMA 21', color: '#f0a429' },
           { label: 'EMA 50', color: '#fb923c' },
           { label: 'EMA 200', color: '#ef4444' },
+          { label: 'Support', color: 'rgba(34,197,94,0.7)' },
+          { label: 'Resistance', color: 'rgba(239,68,68,0.7)' },
         ].map(({ label, color }) => (
           <div key={label} className="flex items-center gap-1.5">
             <span className="w-4 h-px inline-block" style={{ backgroundColor: color }} />
