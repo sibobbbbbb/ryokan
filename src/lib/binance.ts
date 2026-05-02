@@ -1,6 +1,12 @@
 import type { Candle, Timeframe } from '@/types/market';
 
-const BASE_URL = process.env.BINANCE_BASE_URL ?? 'https://api.binance.com';
+const BINANCE_BASES = [
+  process.env.BINANCE_BASE_URL ?? 'https://api.binance.com',
+  'https://api1.binance.com',
+  'https://api2.binance.com',
+  'https://api3.binance.com',
+  'https://api4.binance.com',
+];
 
 const INTERVAL_MAP: Record<Timeframe, string> = {
   '1h': '1h',
@@ -8,15 +14,39 @@ const INTERVAL_MAP: Record<Timeframe, string> = {
   '1d': '1d',
 };
 
+async function fetchWithFallback(path: string, cacheSeconds = 60): Promise<Response> {
+  let lastErr: unknown = null;
+  for (const base of BINANCE_BASES) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    try {
+      const res = await fetch(`${base}${path}`, {
+        signal: controller.signal,
+        next: { revalidate: cacheSeconds },
+      });
+      clearTimeout(timer);
+      if (res.status === 403 || res.status === 451) continue;
+      return res;
+    } catch (err) {
+      clearTimeout(timer);
+      lastErr = err;
+    }
+  }
+  throw new BinanceError(
+    `All Binance endpoints unreachable: ${lastErr instanceof Error ? lastErr.message : String(lastErr)}`,
+    503
+  );
+}
+
 export async function fetchKlines(
   symbol: string,
   timeframe: Timeframe,
   limit = 200
 ): Promise<Candle[]> {
   const interval = INTERVAL_MAP[timeframe];
-  const url = `${BASE_URL}/api/v3/klines?symbol=${encodeURIComponent(symbol)}&interval=${interval}&limit=${limit}`;
+  const path = `/api/v3/klines?symbol=${encodeURIComponent(symbol)}&interval=${interval}&limit=${limit}`;
 
-  const res = await fetch(url, { next: { revalidate: 60 } });
+  const res = await fetchWithFallback(path, 60);
 
   if (res.status === 400) {
     const body = (await res.json()) as { msg?: string };
@@ -45,9 +75,9 @@ export async function fetchKlines(
 }
 
 export async function fetchCurrentPrice(symbol: string): Promise<number> {
-  const url = `${BASE_URL}/api/v3/ticker/price?symbol=${encodeURIComponent(symbol)}`;
+  const path = `/api/v3/ticker/price?symbol=${encodeURIComponent(symbol)}`;
 
-  const res = await fetch(url, { next: { revalidate: 10 } });
+  const res = await fetchWithFallback(path, 10);
 
   if (res.status === 400) {
     throw new BinanceError(`Symbol not found: ${symbol}`, 400);
