@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react';
 import { useRyokanStore } from '@/store/useRyokanStore';
+import { LogoIcon } from '@/components/ui/LogoIcon';
 import { PositionForm } from '@/components/forms/PositionForm';
 import { ThesisForm } from '@/components/forms/ThesisForm';
 import { MarketStructurePanel } from '@/components/analysis/MarketStructurePanel';
@@ -180,6 +181,7 @@ export default function AnalyzePage() {
         style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-secondary)' }}
       >
         <div className="flex items-center gap-3">
+          <LogoIcon size={22} />
           <span style={{ fontFamily: 'DM Serif Display, serif', fontSize: '1.1rem' }}>RYOKAN</span>
           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>— Risk Accountability System</span>
         </div>

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { LogoIcon } from '@/components/ui/LogoIcon';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -46,9 +47,12 @@ export default function Home() {
     >
       {/* Nav */}
       <nav className="border-b flex items-center justify-between px-6 py-4" style={{ borderColor: 'var(--border)' }}>
-        <span className="text-xs tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
-          凌寒 鉄 / RYOKAN
-        </span>
+        <div className="flex items-center gap-2.5">
+          <LogoIcon size={22} />
+          <span className="text-xs tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+            凌寒 鉄 / RYOKAN
+          </span>
+        </div>
         <Link
           href="/analyze"
           className="text-xs border px-3 py-1.5 transition-colors hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)]"
