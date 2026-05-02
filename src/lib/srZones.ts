@@ -113,11 +113,11 @@ export function findNearestZones(
   const nearestSupport = supports[0] ?? null;
   const nearestResistance = resistances[0] ?? null;
 
-  // Suggested stop: for long → nearest support, for short → nearest resistance
+  // Suggested stop: zone with highest testCount (most-tested = strongest structural level)
   const suggestedStop =
     direction === 'long'
-      ? (nearestSupport?.priceLevel ?? null)
-      : (nearestResistance?.priceLevel ?? null);
+      ? ([...supports].sort((a, b) => b.testCount - a.testCount)[0]?.priceLevel ?? null)
+      : ([...resistances].sort((a, b) => b.testCount - a.testCount)[0]?.priceLevel ?? null);
 
   return { nearestSupport, nearestResistance, suggestedStop };
 }

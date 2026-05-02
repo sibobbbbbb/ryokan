@@ -279,11 +279,7 @@ export default function AnalyzePage() {
               <>
                 <section>
                   <SectionHeader label="STEP 2" title="Market Structure" />
-                  <MarketStructurePanel
-                    data={marketStructure}
-                    stopPrice={stopPrice}
-                    onStopChange={recalculateRisk}
-                  />
+                  <MarketStructurePanel data={marketStructure} />
                 </section>
 
                 {!thesisEvalResult && (

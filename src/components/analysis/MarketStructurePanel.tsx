@@ -1,13 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { cn, formatPrice, formatPct } from '@/lib/utils';
 import type { MarketStructure, SRZone } from '@/types/market';
 
 interface MarketStructurePanelProps {
   data: MarketStructure;
-  stopPrice: number | null;
-  onStopChange: (price: number) => void;
 }
 
 const GRADE_COLOR: Record<string, string> = {
@@ -29,20 +26,10 @@ const REGIME_COLOR: Record<string, string> = {
   mixed: 'var(--accent-warn)',
 };
 
-export function MarketStructurePanel({ data, stopPrice, onStopChange }: MarketStructurePanelProps) {
+export function MarketStructurePanel({ data }: MarketStructurePanelProps) {
   const { ema, entryGrade, entryGradeReason, srZones, nearestSupport, nearestResistance } = data;
 
   const nearbyZones = srZones.filter((z) => z.distanceFromEntry <= 5).slice(0, 6);
-
-  const [overrideStr, setOverrideStr] = useState(stopPrice !== null ? stopPrice.toFixed(2) : '');
-  useEffect(() => {
-    if (stopPrice !== null) setOverrideStr(stopPrice.toFixed(2));
-  }, [stopPrice]);
-
-  function handleOverrideBlur() {
-    const val = parseFloat(overrideStr);
-    if (val > 0 && val !== stopPrice) onStopChange(val);
-  }
 
   return (
     <div className="space-y-4">
@@ -150,29 +137,6 @@ export function MarketStructurePanel({ data, stopPrice, onStopChange }: MarketSt
         </div>
       )}
 
-      {/* Stop Price display + manual override */}
-      <div className="p-3 border space-y-2" style={{ borderColor: 'var(--accent-danger)30', backgroundColor: 'var(--bg-card)' }}>
-        <div className="flex items-center justify-between">
-          <span className="text-xs tracking-widest" style={{ color: 'var(--text-muted)' }}>SUGGESTED STOP</span>
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>from S/R structure</span>
-        </div>
-        <div className="text-sm font-mono font-semibold" style={{ color: 'var(--accent-danger)' }}>
-          {stopPrice !== null ? `$${formatPrice(stopPrice)}` : '—'}
-        </div>
-        <div>
-          <label className="block text-xs mb-1" style={{ color: 'var(--text-muted)' }}>MANUAL OVERRIDE</label>
-          <input
-            type="number"
-            value={overrideStr}
-            onChange={(e) => setOverrideStr(e.target.value)}
-            onBlur={handleOverrideBlur}
-            placeholder="Enter custom stop price..."
-            step="any"
-            className="w-full px-3 py-1.5 text-sm border outline-none font-mono"
-            style={{ borderColor: 'var(--border)', color: 'var(--text-primary)', backgroundColor: 'var(--bg-elevated)' }}
-          />
-        </div>
-      </div>
     </div>
   );
 }
