@@ -6,6 +6,7 @@ import { LogoIcon } from '@/components/ui/LogoIcon';
 import { PositionForm } from '@/components/forms/PositionForm';
 import { ThesisForm } from '@/components/forms/ThesisForm';
 import { MarketStructurePanel } from '@/components/analysis/MarketStructurePanel';
+import { StopSelector } from '@/components/analysis/StopSelector';
 import { RiskMatrixPanel } from '@/components/risk/RiskMatrixPanel';
 import { RyokanCharacter } from '@/components/ryokan/RyokanCharacter';
 import { RyokanSpeech } from '@/components/ryokan/RyokanSpeech';
@@ -25,6 +26,8 @@ export default function AnalyzePage() {
     thesisEvalResult,
     riskTiers,
     positionData,
+    stopPrice,
+    targetPrice,
     isLoading,
     currentStatement,
     characterState,
@@ -35,6 +38,8 @@ export default function AnalyzePage() {
     setEmaArrays,
     setThesisResult,
     setRiskTiers,
+    setStopPrice,
+    setTargetPrice,
     setLoading,
     setError,
     setCharacterState,
@@ -71,6 +76,11 @@ export default function AnalyzePage() {
 
         setMarketStructure(marketJson);
 
+        const computedStop = marketJson.suggestedStop ??
+          data.entryPrice * (data.direction === 'long' ? 0.98 : 1.02);
+        setStopPrice(computedStop);
+        setTargetPrice(data.targetPrice ?? null);
+
         if (candlesRes.ok) {
           const candleJson = (await candlesRes.json()) as { candles?: Candle[]; emaArrays?: { ema9: number[]; ema21: number[]; ema50: number[]; ema200: number[] } };
           if (candleJson.candles) setCandles(candleJson.candles);
@@ -89,7 +99,34 @@ export default function AnalyzePage() {
         setLoading(false);
       }
     },
-    [setPositionData, setLoading, setCharacterState, setCurrentStatement, setError, setMarketStructure, setCandles, setEmaArrays, advanceStep]
+    [setPositionData, setLoading, setCharacterState, setCurrentStatement, setError, setMarketStructure, setCandles, setEmaArrays, setStopPrice, setTargetPrice, advanceStep]
+  );
+
+  // Called by StopSelector and manual override — updates store + pre-calculates risk
+  const recalculateRisk = useCallback(
+    async (newStop: number) => {
+      if (!positionData) return;
+      setStopPrice(newStop);
+      try {
+        const riskRes = await fetch('/api/risk-matrix', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            entryPrice: positionData.entryPrice,
+            stopPrice: newStop,
+            accountSize: positionData.accountSize,
+            leverage: positionData.leverage,
+            direction: positionData.direction,
+            targetPrice: targetPrice ?? undefined,
+          }),
+        });
+        const riskJson = (await riskRes.json()) as RiskTiersResponse & { error?: string };
+        if (riskRes.ok) setRiskTiers(riskJson);
+      } catch {
+        // non-critical — don't interrupt UX
+      }
+    },
+    [positionData, targetPrice, setStopPrice, setRiskTiers]
   );
 
   // Step 2 → evaluate thesis → fetch risk
@@ -134,8 +171,7 @@ export default function AnalyzePage() {
 
         setCharacterState(evalJson.thesisScore >= 7 ? 'approve' : 'warning');
 
-        const stopPrice =
-          marketStructure.suggestedStop ??
+        const stopPriceToUse = stopPrice ??
           positionData.entryPrice * (positionData.direction === 'long' ? 0.98 : 1.02);
 
         const riskRes = await fetch('/api/risk-matrix', {
@@ -143,10 +179,11 @@ export default function AnalyzePage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             entryPrice: positionData.entryPrice,
-            stopPrice,
+            stopPrice: stopPriceToUse,
             accountSize: positionData.accountSize,
             leverage: positionData.leverage,
             direction: positionData.direction,
+            targetPrice: targetPrice ?? undefined,
           }),
         });
 
@@ -164,7 +201,7 @@ export default function AnalyzePage() {
         setLoading(false);
       }
     },
-    [marketStructure, positionData, setLoading, setCharacterState, setCurrentStatement, setError, setThesisResult, setRiskTiers, advanceStep]
+    [marketStructure, positionData, stopPrice, targetPrice, setLoading, setCharacterState, setCurrentStatement, setError, setThesisResult, setRiskTiers, advanceStep]
   );
 
   const handleTimeframeChange = useCallback(
@@ -238,18 +275,38 @@ export default function AnalyzePage() {
             )}
 
             {/* STEP 2 — Market Structure + Thesis */}
-            {currentStep >= 2 && marketStructure && (
+            {currentStep >= 2 && marketStructure && positionData && (
               <>
                 <section>
                   <SectionHeader label="STEP 2" title="Market Structure" />
-                  <MarketStructurePanel data={marketStructure} />
+                  <MarketStructurePanel
+                    data={marketStructure}
+                    stopPrice={stopPrice}
+                    onStopChange={recalculateRisk}
+                  />
                 </section>
 
                 {!thesisEvalResult && (
-                  <section>
-                    <SectionHeader label="" title="Thesis Review" />
-                    <ThesisForm onSubmit={handleThesisSubmit} isLoading={isLoading} />
-                  </section>
+                  <>
+                    <section>
+                      <SectionHeader label="" title="Stop Level" />
+                      <StopSelector
+                        zones={marketStructure.srZones}
+                        direction={positionData.direction}
+                        selectedStop={stopPrice}
+                        onSelect={recalculateRisk}
+                      />
+                    </section>
+
+                    <section>
+                      <SectionHeader label="" title="Thesis Review" />
+                      <ThesisForm
+                        onSubmit={handleThesisSubmit}
+                        isLoading={isLoading}
+                        disabled={!stopPrice}
+                      />
+                    </section>
+                  </>
                 )}
               </>
             )}

@@ -17,6 +17,7 @@ export function PositionForm({ onSubmit, isLoading }: PositionFormProps) {
   const [symbol, setSymbol] = useState('BTCUSDT');
   const [direction, setDirection] = useState<'long' | 'short'>('long');
   const [entryPrice, setEntryPrice] = useState('');
+  const [targetPrice, setTargetPrice] = useState('');
   const [accountSize, setAccountSize] = useState('');
   const [leverage, setLeverage] = useState(10);
   const [timeframe, setTimeframe] = useState<Timeframe>('4h');
@@ -40,6 +41,7 @@ export function PositionForm({ onSubmit, isLoading }: PositionFormProps) {
     const entry = parseFloat(entryPrice);
     const account = parseFloat(accountSize);
     if (!entry || !account || entry <= 0 || account <= 0) return;
+    const target = parseFloat(targetPrice);
     onSubmit({
       symbol: symbol.trim().toUpperCase(),
       direction,
@@ -47,6 +49,7 @@ export function PositionForm({ onSubmit, isLoading }: PositionFormProps) {
       accountSize: account,
       leverage,
       timeframe,
+      targetPrice: target > 0 ? target : undefined,
     });
   }
 
@@ -144,6 +147,23 @@ export function PositionForm({ onSubmit, isLoading }: PositionFormProps) {
             style={{ borderColor: 'var(--border)', color: 'var(--text-primary)', backgroundColor: 'var(--bg-elevated)' }}
           />
         </div>
+      </div>
+
+      {/* Take Profit Target */}
+      <div>
+        <label className="block text-xs mb-1.5" style={{ color: 'var(--text-muted)' }}>
+          TAKE PROFIT TARGET{' '}
+          <span style={{ color: 'var(--text-muted)', opacity: 0.6 }}>(OPTIONAL)</span>
+        </label>
+        <input
+          type="number"
+          value={targetPrice}
+          onChange={(e) => setTargetPrice(e.target.value)}
+          placeholder="Target price for R:R calculation"
+          step="any"
+          className="w-full px-3 py-2 text-sm border outline-none font-mono"
+          style={{ borderColor: 'var(--border)', color: 'var(--text-primary)', backgroundColor: 'var(--bg-elevated)' }}
+        />
       </div>
 
       {/* Leverage */}

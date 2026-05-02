@@ -19,6 +19,10 @@ interface RyokanStore {
   thesisEvalResult: ThesisEvalResult | null;
   riskTiers: RiskTiersResponse | null;
 
+  // Derived inputs for risk calculation
+  stopPrice: number | null;
+  targetPrice: number | null;
+
   // UI
   isLoading: boolean;
   loadingMessage: string;
@@ -33,6 +37,8 @@ interface RyokanStore {
   setEmaArrays: (arrays: EMAArrays) => void;
   setThesisResult: (result: ThesisEvalResult) => void;
   setRiskTiers: (tiers: RiskTiersResponse) => void;
+  setStopPrice: (price: number | null) => void;
+  setTargetPrice: (price: number | null) => void;
   setLoading: (loading: boolean, message?: string) => void;
   setCharacterState: (state: CharacterState) => void;
   setCurrentStatement: (text: string) => void;
@@ -49,6 +55,8 @@ export const useRyokanStore = create<RyokanStore>((set) => ({
   emaArrays: null,
   thesisEvalResult: null,
   riskTiers: null,
+  stopPrice: null,
+  targetPrice: null,
   isLoading: false,
   loadingMessage: '',
   characterState: 'idle',
@@ -61,6 +69,8 @@ export const useRyokanStore = create<RyokanStore>((set) => ({
   setEmaArrays: (arrays) => set({ emaArrays: arrays }),
   setThesisResult: (result) => set({ thesisEvalResult: result }),
   setRiskTiers: (tiers) => set({ riskTiers: tiers }),
+  setStopPrice: (price) => set({ stopPrice: price }),
+  setTargetPrice: (price) => set({ targetPrice: price }),
   setLoading: (loading, message = '') =>
     set({ isLoading: loading, loadingMessage: message }),
   setCharacterState: (state) => set({ characterState: state }),
@@ -76,6 +86,8 @@ export const useRyokanStore = create<RyokanStore>((set) => ({
       emaArrays: null,
       thesisEvalResult: null,
       riskTiers: null,
+      stopPrice: null,
+      targetPrice: null,
       isLoading: false,
       loadingMessage: '',
       characterState: 'idle',

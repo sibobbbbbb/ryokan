@@ -7,4 +7,5 @@ export interface PositionFormData {
   accountSize: number;
   leverage: number;
   timeframe: Timeframe;
+  targetPrice?: number;
 }

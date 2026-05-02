@@ -5,12 +5,14 @@ import { useState } from 'react';
 interface ThesisFormProps {
   onSubmit: (thesis: string) => void;
   isLoading: boolean;
+  disabled?: boolean;
   ryokanPrompt?: string;
 }
 
 export function ThesisForm({
   onSubmit,
   isLoading,
+  disabled = false,
   ryokanPrompt = 'Before I calculate your risk — tell me why you are taking this trade. One sentence. Make it count.',
 }: ThesisFormProps) {
   const [thesis, setThesis] = useState('');
@@ -61,9 +63,14 @@ export function ThesisForm({
         </div>
       </div>
 
+      {disabled && (
+        <div className="text-xs px-3 py-2 border" style={{ borderColor: 'var(--accent-warn)', color: 'var(--accent-warn)', backgroundColor: 'var(--bg-elevated)' }}>
+          Select a stop level above before submitting your thesis.
+        </div>
+      )}
       <button
         type="submit"
-        disabled={isLoading || !isValid}
+        disabled={isLoading || !isValid || disabled}
         className="w-full py-3 text-sm font-mono border transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         style={{ borderColor: 'var(--accent-primary)', color: 'var(--accent-primary)' }}
       >
