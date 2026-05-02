@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
   try {
     // Fetch candles and current price in parallel
     const [candles, currentPrice] = await Promise.all([
-      fetchKlines(symbol, timeframe, 200),
+      fetchKlines(symbol, timeframe, 500),
       entryPriceParam
         ? Promise.resolve(parseFloat(entryPriceParam))
         : fetchCurrentPrice(symbol),

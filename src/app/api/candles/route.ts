@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const candles = await fetchKlines(symbol, timeframe, 200);
+    const candles = await fetchKlines(symbol, timeframe, 500);
     const emaArrays = calculateEMAArrays(candles);
     return NextResponse.json({ candles, emaArrays }, { status: 200 });
   } catch (error) {
