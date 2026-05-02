@@ -30,9 +30,10 @@ If your thesis scores ≤ 3/10, Ryokan refuses. You must revise and resubmit.
 | Styling | Tailwind CSS + CSS custom properties |
 | State | Zustand |
 | Animations | Framer Motion |
-| Chart | lightweight-charts v4 |
+| Chart | lightweight-charts v4.2 |
 | Market Data | Binance public REST API |
-| AI Evaluation | OpenRouter (DeepSeek R1 / GPT fallback) |
+| AI Evaluation | OpenRouter (openai/gpt-oss-120b) |
+| PNG Export | html2canvas |
 | Deployment | Vercel |
 
 ---
@@ -42,7 +43,7 @@ If your thesis scores ≤ 3/10, Ryokan refuses. You must revise and resubmit.
 ### Ryokan Tetsu — AI Character
 - 6 animated states: `idle`, `analyzing`, `warning`, `reject`, `approve`, `typing`
 - Strict, analytical persona — no encouragement, no padding
-- Typewriter speech delivery at 30ms/character
+- Typewriter speech delivery at 25ms/character
 - Rejects weak theses with specific structural reasoning
 
 ### Market Structure Analysis
@@ -51,6 +52,13 @@ If your thesis scores ≤ 3/10, Ryokan refuses. You must revise and resubmit.
 - S/R zone clustering from swing highs/lows (0.5% merge threshold)
 - Entry grade A–D based on EMA stack alignment
 - Suggested stop at nearest structural zone
+
+### Stop Level Selector
+- Select a structural S/R zone as your stop loss level
+- Zones are filtered by direction (support for longs, resistance for shorts)
+- Color-coded zone strength: high / medium / low
+- Manual override input for custom stop prices
+- Risk matrix recalculates in real time on stop change
 
 ### Candlestick Chart
 - Interactive chart with EMA overlays (9/21/50/200)
@@ -64,12 +72,13 @@ If your thesis scores ≤ 3/10, Ryokan refuses. You must revise and resubmit.
 - Liquidation price with 0.5% maintenance margin
 - Margin utilization with color-coded thresholds
 - Risk flags: overleveraged, poor R:R, margin warning
+- **Leverage Sensitivity Slider** — adjust leverage 1–125× to see real-time impact on liquidation price, margin required, and margin utilization
 
 ### Verdict Card
-- `STRUCTURALLY_SOUND` — score ≥ 7, R:R ≥ 2, risk ≤ 1.5%
-- `PROCEED_WITH_CAUTION` — score 5–7 or risk 1.5–2%
-- `HIGH_RISK_WARNING` — leverage > 20x or margin > 40%
+- `STRUCTURALLY_SOUND` — score ≥ 7
+- `PROCEED_WITH_CAUTION` — score 4–6 (not rejected, not strong)
 - `THESIS_REJECTED` — score ≤ 3
+- Downloadable as PNG via html2canvas
 
 ---
 
@@ -96,6 +105,13 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+For production build:
+
+```bash
+npm run build
+npm run start
+```
+
 ---
 
 ## Project Structure
@@ -104,6 +120,11 @@ Open [http://localhost:3000](http://localhost:3000).
 src/
 ├── app/
 │   ├── page.tsx              # Landing page
+│   ├── layout.tsx            # Root layout + metadata
+│   ├── globals.css           # CSS variables + global styles
+│   ├── opengraph-image.tsx   # OG image generator
+│   ├── robots.ts             # Robots.txt
+│   ├── sitemap.ts            # Sitemap
 │   ├── analyze/page.tsx      # Main 3-step analysis flow
 │   └── api/
 │       ├── market-data/      # Binance + EMA + S/R zones
@@ -111,19 +132,26 @@ src/
 │       ├── risk-matrix/      # Risk calculations
 │       └── candles/          # Raw OHLCV for chart
 ├── components/
-│   ├── ryokan/               # Character, speech, verdict
+│   ├── ryokan/               # RyokanCharacter, RyokanSpeech, RyokanVerdictCard
 │   ├── forms/                # PositionForm, ThesisForm
-│   ├── analysis/             # MarketStructurePanel
+│   ├── analysis/             # MarketStructurePanel, StopSelector
 │   ├── chart/                # CandlestickChart
-│   └── risk/                 # RiskMatrixPanel
+│   ├── risk/                 # RiskMatrixPanel
+│   └── ui/                   # LogoIcon
 ├── lib/
 │   ├── binance.ts            # Binance API client
-│   ├── indicators.ts         # EMA calculations
+│   ├── indicators.ts         # EMA calculations + entry grading
 │   ├── srZones.ts            # S/R clustering algorithm
 │   ├── riskCalculator.ts     # Position sizing math
-│   └── openrouter.ts         # LLM client + Ryokan prompt
-└── store/
-    └── useRyokanStore.ts     # Zustand global store
+│   ├── openrouter.ts         # LLM client + Ryokan prompt
+│   └── utils.ts              # formatPrice, formatPct, cn
+├── store/
+│   └── useRyokanStore.ts     # Zustand global store
+└── types/
+    ├── market.ts             # Candle, SRZone, MarketStructure, EMAResult
+    ├── risk.ts               # RiskInput, RiskOutput, RiskTiersResponse
+    ├── ryokan.ts             # CharacterState, ThesisEvalResult, VerdictType
+    └── forms.ts              # PositionFormData
 ```
 
 ---
