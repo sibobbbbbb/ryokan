@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { MarketStructure, Candle } from '@/types/market';
+import type { EMAArrays } from '@/lib/indicators';
 import type { RiskTiersResponse } from '@/types/risk';
 import type { ThesisEvalResult, CharacterState } from '@/types/ryokan';
 import type { PositionFormData } from '@/types/forms';
@@ -14,6 +15,7 @@ interface RyokanStore {
   // API responses
   marketStructure: MarketStructure | null;
   candles: Candle[];
+  emaArrays: EMAArrays | null;
   thesisEvalResult: ThesisEvalResult | null;
   riskTiers: RiskTiersResponse | null;
 
@@ -28,6 +30,7 @@ interface RyokanStore {
   setPositionData: (data: PositionFormData) => void;
   setMarketStructure: (data: MarketStructure) => void;
   setCandles: (candles: Candle[]) => void;
+  setEmaArrays: (arrays: EMAArrays) => void;
   setThesisResult: (result: ThesisEvalResult) => void;
   setRiskTiers: (tiers: RiskTiersResponse) => void;
   setLoading: (loading: boolean, message?: string) => void;
@@ -43,6 +46,7 @@ export const useRyokanStore = create<RyokanStore>((set) => ({
   currentStep: 1,
   marketStructure: null,
   candles: [],
+  emaArrays: null,
   thesisEvalResult: null,
   riskTiers: null,
   isLoading: false,
@@ -54,6 +58,7 @@ export const useRyokanStore = create<RyokanStore>((set) => ({
   setPositionData: (data) => set({ positionData: data }),
   setMarketStructure: (data) => set({ marketStructure: data }),
   setCandles: (candles) => set({ candles }),
+  setEmaArrays: (arrays) => set({ emaArrays: arrays }),
   setThesisResult: (result) => set({ thesisEvalResult: result }),
   setRiskTiers: (tiers) => set({ riskTiers: tiers }),
   setLoading: (loading, message = '') =>
@@ -68,6 +73,7 @@ export const useRyokanStore = create<RyokanStore>((set) => ({
       currentStep: 1,
       marketStructure: null,
       candles: [],
+      emaArrays: null,
       thesisEvalResult: null,
       riskTiers: null,
       isLoading: false,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchKlines, BinanceError } from '@/lib/binance';
+import { calculateEMAArrays } from '@/lib/indicators';
 import type { Timeframe } from '@/types/market';
 
 export async function GET(req: NextRequest) {
@@ -14,7 +15,8 @@ export async function GET(req: NextRequest) {
 
   try {
     const candles = await fetchKlines(symbol, timeframe, 200);
-    return NextResponse.json({ candles }, { status: 200 });
+    const emaArrays = calculateEMAArrays(candles);
+    return NextResponse.json({ candles, emaArrays }, { status: 200 });
   } catch (error) {
     if (error instanceof BinanceError) {
       return NextResponse.json({ error: error.message }, { status: error.statusCode });

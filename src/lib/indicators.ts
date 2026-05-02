@@ -1,6 +1,23 @@
 import { EMA } from 'technicalindicators';
 import type { Candle, EMAResult, EntryGrade, EMARegime } from '@/types/market';
 
+export interface EMAArrays {
+  ema9: number[];
+  ema21: number[];
+  ema50: number[];
+  ema200: number[];
+}
+
+export function calculateEMAArrays(candles: Candle[]): EMAArrays {
+  const closes = candles.map((c) => c.close);
+  return {
+    ema9: EMA.calculate({ period: 9, values: closes }),
+    ema21: EMA.calculate({ period: 21, values: closes }),
+    ema50: EMA.calculate({ period: 50, values: closes }),
+    ema200: EMA.calculate({ period: 200, values: closes }),
+  };
+}
+
 export function calculateEMAs(candles: Candle[]): EMAResult {
   const closes = candles.map((c) => c.close);
 

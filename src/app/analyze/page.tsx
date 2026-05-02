@@ -21,6 +21,7 @@ export default function AnalyzePage() {
     currentStep,
     marketStructure,
     candles,
+    emaArrays,
     thesisEvalResult,
     riskTiers,
     positionData,
@@ -31,6 +32,7 @@ export default function AnalyzePage() {
     setPositionData,
     setMarketStructure,
     setCandles,
+    setEmaArrays,
     setThesisResult,
     setRiskTiers,
     setLoading,
@@ -70,8 +72,9 @@ export default function AnalyzePage() {
         setMarketStructure(marketJson);
 
         if (candlesRes.ok) {
-          const candleJson = (await candlesRes.json()) as { candles?: Candle[] };
+          const candleJson = (await candlesRes.json()) as { candles?: Candle[]; emaArrays?: { ema9: number[]; ema21: number[]; ema50: number[]; ema200: number[] } };
           if (candleJson.candles) setCandles(candleJson.candles);
+          if (candleJson.emaArrays) setEmaArrays(candleJson.emaArrays);
         }
 
         setCharacterState('idle');
@@ -86,7 +89,7 @@ export default function AnalyzePage() {
         setLoading(false);
       }
     },
-    [setPositionData, setLoading, setCharacterState, setCurrentStatement, setError, setMarketStructure, setCandles, advanceStep]
+    [setPositionData, setLoading, setCharacterState, setCurrentStatement, setError, setMarketStructure, setCandles, setEmaArrays, advanceStep]
   );
 
   // Step 2 → evaluate thesis → fetch risk
@@ -277,10 +280,10 @@ export default function AnalyzePage() {
               <CandlestickChart
                 candles={candles}
                 emaData={{
-                  ema9: [],
-                  ema21: [],
-                  ema50: [],
-                  ema200: [],
+                  ema9: emaArrays?.ema9 ?? [],
+                  ema21: emaArrays?.ema21 ?? [],
+                  ema50: emaArrays?.ema50 ?? [],
+                  ema200: emaArrays?.ema200 ?? [],
                 }}
                 srZones={marketStructure.srZones}
                 entryPrice={positionData.entryPrice}
